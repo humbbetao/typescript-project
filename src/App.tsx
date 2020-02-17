@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+type FormElem = React.FormEvent<HTMLFormElement>;
+
+interface ITodo {
+  text: string;
+  complete: boolean;
 }
 
-export default App;
+export default function App(): JSX.Element {
+  const [value, setValue] = useState<string>("");
+  const [todos, setTodos] = useState<ITodo[]>([]);
+  const handleOnSubmit = (e: FormElem): void => {
+    e.preventDefault();
+    addTodo(value);
+    setValue("");
+  };
+
+  const addTodo = (text: string) => {
+    const newTodos: ITodo[] = [...todos, { text, complete: false }];
+    setTodos(newTodos);
+  };
+
+  return (
+    <React.Fragment>
+      <h1> Todo List</h1>
+      <form onSubmit={handleOnSubmit}>
+        <input
+          type="text"
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          required
+        />
+        <button type="submit">Add Todo</button>
+      </form>
+    </React.Fragment>
+  );
+}
